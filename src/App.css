@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,18 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+.centeredTextAlign {
+  text-align: center;
+}
+
+.divPhotos {
+  text-align: center;
+  margin: 50px;
+}
+
+.photosText {
+  font-size: x-large;
+  font-style: italic;
 }
