@@ -1,34 +1,23 @@
 //import logo from './logo.svg';
 import './App.css';
-import Footer from './Footer/Footer';
-import Header from './Header/Header';
+import { Routes, Route } from 'react-router-dom';
 import Main from './Main/Main';
+import AddEditItem from './AddEdit/AddEditItem';
+
 
 function App() {
   return (
-    <div>
-      <Header></Header>
-      <Main></Main>
-      <Footer></Footer>
-    </div>
-
-
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
+    // <div>
+    //   <Header></Header>
+    //   <Main></Main>
+    //   <Footer></Footer>
     // </div>
+    <div className="App">
+    <Routes>
+      <Route path="/" element={<Main />} />
+      <Route path="AddEdit" element={<AddEditItem />} />
+    </Routes>
+  </div>
   );
 }
 

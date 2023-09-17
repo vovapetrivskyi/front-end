@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <div className="footer">
       <h1 class="centeredTextAlign">
-        &copy; {currentYear} Developer Volodymyr Petrivskyi
+        &copy; {currentYear} Developer V.P
       </h1>
     </div>
   );
