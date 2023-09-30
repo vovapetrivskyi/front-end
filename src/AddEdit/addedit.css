@@ -14,3 +14,8 @@
     right: 0px;
     overflow: auto;
   }
+
+  .addEditForm {
+    text-align: center;
+    font-size: x-large;
+  }

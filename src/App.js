@@ -2,7 +2,7 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Main from './Main/Main';
-import AddEditItem from './AddEdit/AddEditItem';
+import AddEditPage from './AddEdit/AddEditPage';
 
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
     <div className="App">
     <Routes>
       <Route path="/" element={<Main />} />
-      <Route path="AddEdit" element={<AddEditItem />} />
+      <Route path="AddEdit" element={<AddEditPage />} />
     </Routes>
   </div>
   );
