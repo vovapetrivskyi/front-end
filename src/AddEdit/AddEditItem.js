@@ -10,7 +10,7 @@ export default function AddEditItem() {
   const [owner, setOwner] = useState("");
   const [note, setNote] = useState("");
   const [photoSrc, setPhotoSrc] = useState(noPhotoSrc);
-  
+
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const fileReader = new FileReader();
@@ -76,15 +76,11 @@ export default function AddEditItem() {
           />
         </label>
         <p></p>
-        <input
-          type="file"
-          onChange={handleFileInput}
-          accept="image/*"
-        />
+        <input type="file" onChange={handleFileInput} accept="image/*" />
         <p></p>
         <img src={photoSrc} alt=""></img>
         <p></p>
-        <input type="submit" value="Зберегти" />
+        <input className="saveButton" type="submit" value="Зберегти" />
       </form>
     </div>
   );
