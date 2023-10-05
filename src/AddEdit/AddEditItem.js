@@ -1,44 +1,46 @@
-import { useState, useRef } from 'react';
+import { React, useState } from "react";
 
 import "./addedit.css";
 
 export default function AddEditItem() {
-  const noPhotoSrc = "Images//noPhoto.jpg"
+  const noPhotoSrc = "Images//noPhoto.jpg";
 
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [owner, setOwner] = useState("");
   const [note, setNote] = useState("");
   const [photoSrc, setPhotoSrc] = useState(noPhotoSrc);
-
-  const inputRef = useRef(null);
-
-  const handleClick = () => {
-    inputRef.current.click();
+  
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
 
-  const handleFileChange = event => {
-    const fileObj = event.target.files && event.target.files[0];
+  const handleFileInput = async (e) => {
+    let imageFile = e.target.files[0];
 
-    if (!fileObj) {
-      return;
-    }
+    let imageInBase64 = await convertBase64(imageFile);
 
-    console.log('fileObj is', fileObj);
+    setPhotoSrc(imageInBase64);
+  };
 
-    event.target.value = null;
-
-    console.log(event.target.files);
-
-    console.log(fileObj);
-
-    console.log(fileObj.name);
+  const handleSubmit = (e) => {
+    //TO DO Save To SERVER
   };
 
   return (
-    <div class="addedit">
-      <form class="addEditForm">
-        <label>Enter name:
+    <div className="addedit">
+      <form className="addEditForm" onSubmit={handleSubmit}>
+        <label>
+          Enter name:
           <input
             type="text"
             value={name}
@@ -46,7 +48,8 @@ export default function AddEditItem() {
           />
         </label>
         <p></p>
-        <label>Enter age:
+        <label>
+          Enter age:
           <input
             type="number"
             value={age}
@@ -55,7 +58,8 @@ export default function AddEditItem() {
           />
         </label>
         <p></p>
-        <label>Enter owner
+        <label>
+          Enter owner
           <input
             type="text"
             value={owner}
@@ -63,7 +67,8 @@ export default function AddEditItem() {
           />
         </label>
         <p></p>
-        <label>Enter note
+        <label>
+          Enter note
           <input
             type="text"
             value={note}
@@ -72,18 +77,14 @@ export default function AddEditItem() {
         </label>
         <p></p>
         <input
-          style={{ display: 'none' }}
-          ref={inputRef}
           type="file"
-          onChange={handleFileChange}
-        />
-        <button onClick={handleClick}>Load Photo</button>
-        <p></p>
-        <img
-          src={photoSrc}
-          alt=""
+          onChange={handleFileInput}
           accept="image/*"
-        ></img>
+        />
+        <p></p>
+        <img src={photoSrc} alt=""></img>
+        <p></p>
+        <input type="submit" value="Зберегти" />
       </form>
     </div>
   );

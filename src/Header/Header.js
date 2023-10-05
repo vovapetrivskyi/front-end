@@ -4,7 +4,7 @@ import "./header.css";
 function Header() {
   return (
     <div className="header">
-      <h1 class="centeredTextAlign">Doggos site</h1>
+      <h1 className="centeredTextAlign">Doggos site</h1>
       <nav className="centeredTextAlign">
             <Link to="/" className="link">Home</Link>
             <Link to="/AddEdit" className="link">Add Doggo</Link>

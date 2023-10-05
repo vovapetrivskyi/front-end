@@ -5,7 +5,7 @@ export default function Footer() {
 
   return (
     <div className="footer">
-      <h1 class="centeredTextAlign">
+      <h1 className="centeredTextAlign">
         &copy; {currentYear} Developer V.P
       </h1>
     </div>
