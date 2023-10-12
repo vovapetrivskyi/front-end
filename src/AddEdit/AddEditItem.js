@@ -33,7 +33,42 @@ export default function AddEditItem() {
   };
 
   const handleSubmit = (e) => {
-    //TO DO Save To SERVER
+
+    e.preventDefault();
+
+    let doggo = {
+      Name: name,
+      Age: age,
+      Owner: owner,
+      Note: note,
+      Photo: photoSrc,
+    };
+
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(doggo),
+    };
+    
+    fetch("http://localhost:3010/SaveDoggo", requestOptions)
+      .then(async (response) => {
+        const isJson = response.headers
+          .get("content-type")
+          ?.includes("application/json");
+        const data = isJson && (await response.json());
+
+        // check for error response
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status;
+          return Promise.reject(error);
+        }
+
+        //this.setState({ postId: data.id });
+      })
+      .catch((error) => {
+        alert("Error. Try later, please");
+      });
   };
 
   return (
