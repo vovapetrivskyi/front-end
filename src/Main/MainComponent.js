@@ -7,19 +7,19 @@ const testData = [
     name: "Sunflower1",
     age: 10,
     image: "TestImages//sunflower1.jpg",
-    isTestData: true
+    isTestData: true,
   },
   {
     name: "Rose1",
     age: 5,
     image: "TestImages//rose1.jpg",
-    isTestData: true
+    isTestData: true,
   },
   {
     name: "Pivon1",
     age: 5,
     image: "TestImages//pivons1.jpg",
-    isTestData: true
+    isTestData: true,
   },
 ];
 
@@ -29,15 +29,17 @@ export default function MainComponent() {
   const [data, setData] = useState([]);
 
   const fetchInfo = () => {
-    return fetch(url)    
+    return fetch(url)
+      .then((res) => res.text())
       .then((res) => {
-        if (res.status !== 200) {
-          res = testData;
-        } else {
-          res.json();
+        try {
+          let data = JSON.parse(res);
+
+          setData(data);
+        } catch (err) {
+          setData(testData);
         }
       })
-      .then((d) => setData(d))
       .catch(() => setData(testData));
   };
 
