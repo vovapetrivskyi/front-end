@@ -1,86 +1,107 @@
-import { React, useState } from "react";
-
+import React from "react";
 import "./addedit.css";
 
-export default function AddEditItem() {
-  const noPhotoSrc = "Images//noPhoto.jpg";
+class AddEdit extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: "",
+      age: "",
+      owner: "",
+      note: "",
+      photoSrc: "Images//noPhoto.jpg",
+      isLoaded: false,
+      isEdit: false
+    };
+  }
 
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [owner, setOwner] = useState("");
-  const [note, setNote] = useState("");
-  const [photoSrc, setPhotoSrc] = useState(noPhotoSrc);
+  componentDidMount() {
+    if (!this.state.isLoaded) {
+      if (this.props.entityId !== undefined && this.props.entityId !== null) {
+        let url = "http://localhost:3010/GetDoggoById?id=" + this.props.entityId;
 
-  const convertBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
+        fetch(url)
+        .then((res) => res.json())
+        .then((result) => {
+          if (result != null) {
+            this.setState({
+              name: result.name,
+              age: result.age,
+              owner: result.owner,
+              note: result.note,
+              photoSrc: this.getImageSrcBase64(result.photo),
+              isLoaded: false,
+              isEdit: false
+            });
+          }
+        })
+        .catch((error) => {
+          alert("Doggo not found");
+          console.error(error);
+        });
+      }
+      this.setState({ isLoaded: true });
+    }
+  }
+
+  getImageSrcBase64(base64String) {
+    return `data:image/jpeg;base64,${base64String}`;
   };
 
-  const handleFileInput = async (e) => {
-    let imageFile = e.target.files[0];
-
-    let imageInBase64 = await convertBase64(imageFile);
-
-    setPhotoSrc(imageInBase64);
-  };
-
-  const handleSubmit = (e) => {
+  handleSubmit(e) {
     e.preventDefault();
 
-    if (validateInput()) {
+    if (this.validateInput()) {
       let doggo = {
-        Name: name,
-        Age: age,
-        Owner: owner,
-        Note: note,
-        Photo: photoSrc,
+        Name: this.state.name,
+        Age: this.state.age,
+        Owner: this.state.owner,
+        Note: this.state.note,
+        Photo: this.state.photoSrc,
       };
 
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(doggo),
+        body: "",
       };
 
-      fetch("http://localhost:3010/SaveDoggo", requestOptions)
-        .then(async (response) => {
-          const isJson = response.headers
-            .get("content-type")
-            ?.includes("application/json");
-          const data = isJson && (await response.json());
+      if (this.state.isEdit) {
+        doggo._id = this.props.entityId;
+        requestOptions.body = JSON.stringify(doggo);
+        //!!!!!!!!!!! Write update method and test
+      } else {
+        requestOptions.body = JSON.stringify(doggo);
+        fetch("http://localhost:3010/SaveDoggo", requestOptions)
+          .then(async (response) => {
+            const isJson = response.headers
+              .get("content-type")
+              ?.includes("application/json");
+            const data = isJson && (await response.json());
 
-          // check for error response
-          if (!response.ok) {
-            // get error message from body or default to response status
-            const error = (data && data.message) || response.status;
-            return Promise.reject(error);
-          }
-
-          //this.setState({ postId: data.id });
-        })
-        .catch((error) => {
-          alert("Error. Try later, please");
-        });
+            // check for error response
+            if (!response.ok) {
+              // get error message from body or default to response status
+              const error = (data && data.message) || response.status;
+              return Promise.reject(error);
+            }
+          })
+          .catch((error) => {
+            alert("Error. Try later, please");
+          });
+      }
     }
-  };
+  }
 
-  const validateInput = () => {
+  validateInput() {
     let result = true;
     let validationError = "";
 
-    if (name === undefined || name === "") {
+    if (this.state.name === undefined || this.state.name === "") {
       validationError += "Name can not be empty.";
     }
 
-    if (age === undefined || age === "") {
+    if (this.state.age === undefined || this.state.age === "") {
       validationError += "Age can not be empty.";
     }
 
@@ -93,52 +114,81 @@ export default function AddEditItem() {
     return result;
   };
 
-  return (
-    <div className="addedit">
-      <form className="addEditForm" onSubmit={handleSubmit}>
-        <label>
-          Enter name:
+  async convertBase64(file) {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  async handleFileInput(e) {
+    let imageFile = e.target.files[0];
+
+    let imageInBase64 = await this.convertBase64(imageFile);
+
+    this.setState({ photoSrc: imageInBase64 });
+  };
+
+  render() {
+    return (
+      <div className="addedit">
+        <form className="addEditForm" onSubmit={this.handleSubmit.bind(this)}>
+          <label>
+            Enter name:
+            <input
+              type="text"
+              value={this.state.name}
+              onChange={(e) => this.setState({ name: e.target.value })}
+            />
+          </label>
+          <p></p>
+          <label>
+            Enter age:
+            <input
+              type="number"
+              value={this.state.age}
+              min="0"
+              onChange={(e) => this.setState({ age: e.target.value })}
+            />
+          </label>
+          <p></p>
+          <label>
+            Enter owner
+            <input
+              type="text"
+              value={this.state.owner}
+              onChange={(e) => this.setState({ owner: e.target.value })}
+            />
+          </label>
+          <p></p>
+          <label>
+            Enter note
+            <input
+              type="text"
+              value={this.state.note}
+              onChange={(e) => this.setState({ note: e.target.note })}
+            />
+          </label>
+          <p></p>
           <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            type="file"
+            onChange={this.handleFileInput.bind(this)}
+            accept="image/*"
           />
-        </label>
-        <p></p>
-        <label>
-          Enter age:
-          <input
-            type="number"
-            value={age}
-            min="0"
-            onChange={(e) => setAge(e.target.value)}
-          />
-        </label>
-        <p></p>
-        <label>
-          Enter owner
-          <input
-            type="text"
-            value={owner}
-            onChange={(e) => setOwner(e.target.value)}
-          />
-        </label>
-        <p></p>
-        <label>
-          Enter note
-          <input
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-          />
-        </label>
-        <p></p>
-        <input type="file" onChange={handleFileInput} accept="image/*" />
-        <p></p>
-        <img src={photoSrc} alt=""></img>
-        <p></p>
-        <input className="saveButton" type="submit" value="Зберегти" />
-      </form>
-    </div>
-  );
+          <p></p>
+          <img src={this.state.photoSrc} alt=""></img>
+          <p></p>
+          <input className="saveButton" type="submit" value="Зберегти" />
+        </form>
+      </div>
+    );
+  }
 }
+
+export default AddEdit;
