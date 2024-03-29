@@ -7,19 +7,21 @@
 function DataComponent(dataSet) {
   //const navigate = useNavigate();
 
-  const divName = "div" + dataSet.name + "_" + dataSet._id;
+  const divName = "div" + dataSet.Name + "_" + dataSet._id;
 
   const imageSrc = !dataSet.isTestData
-    ? "data:image/jpeg;base64," + dataSet.photo
+    ? dataSet.Photo
     : dataSet.image;
 
   const text = !dataSet.isTestData
     ? "Name:" +
-      dataSet.name +
+      dataSet.Name +
       " Owner:" +
-      dataSet.owner +
+      dataSet.Owner +
+      " Age:" + 
+      dataSet.Age +
       " Note: " +
-      dataSet.note
+      dataSet.Note
     : dataSet.name;
 
   const EditEntity = (entityId) => {
@@ -27,16 +29,12 @@ function DataComponent(dataSet) {
       window.location.assign("/AddEdit");
     } else {
       window.location.assign("/AddEdit?entityId=" + entityId);
-      // <Route exact path="/AddEdit" render={(entityId) => (
-      //   <AddEditPage id={entityId}/>
-   // )} />
     }
-    //navigate('/AddEdit?entityId=' + entityId);
   };
 
   return (
     <div id={divName} class="divPhotos">
-      <img src={imageSrc} alt={dataSet.name}></img>
+      <img src={imageSrc} alt={!dataSet.isTestData ? dataSet.Name : dataSet.name}></img>
       <p class="photosText">{text}</p>
       <button
         onClick={() => {
