@@ -25,13 +25,13 @@ class AddEdit extends React.Component {
         .then((result) => {
           if (result != null) {
             this.setState({
-              name: result.name,
-              age: result.age,
-              owner: result.owner,
-              note: result.note,
-              photoSrc: this.getImageSrcBase64(result.photo),
+              name: result.Name,
+              age: result.Age,
+              owner: result.Owner,
+              note: result.Note,
+              photoSrc: result.Photo,
               isLoaded: false,
-              isEdit: false
+              isEdit: true
             });
           }
         })
@@ -43,10 +43,6 @@ class AddEdit extends React.Component {
       this.setState({ isLoaded: true });
     }
   }
-
-  getImageSrcBase64(base64String) {
-    return `data:image/jpeg;base64,${base64String}`;
-  };
 
   handleSubmit(e) {
     e.preventDefault();
@@ -69,7 +65,26 @@ class AddEdit extends React.Component {
       if (this.state.isEdit) {
         doggo._id = this.props.entityId;
         requestOptions.body = JSON.stringify(doggo);
-        //!!!!!!!!!!! Write update method and test
+        requestOptions.method = "PUT";
+        fetch("http://localhost:3010/UpdateDoggo", requestOptions)
+          .then(async (response) => {
+            const isJson = response.headers
+              .get("content-type")
+              ?.includes("application/json");
+            const data = isJson && (await response.json());
+
+            // check for error response
+            if (!response.ok) {
+              // get error message from body or default to response status
+              const error = (data && data.message) || response.status;
+              return Promise.reject(error);
+            } else {
+              window.location.assign("/");
+            }
+          })
+          .catch((error) => {
+            alert("Error. Try later, please");
+          });
       } else {
         requestOptions.body = JSON.stringify(doggo);
         fetch("http://localhost:3010/SaveDoggo", requestOptions)
