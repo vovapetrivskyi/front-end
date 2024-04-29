@@ -99,6 +99,8 @@ class AddEdit extends React.Component {
               // get error message from body or default to response status
               const error = (data && data.message) || response.status;
               return Promise.reject(error);
+            } else {
+              window.location.assign("/");
             }
           })
           .catch((error) => {
